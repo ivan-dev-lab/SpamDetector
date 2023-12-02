@@ -15,7 +15,7 @@ def translate_data (data: pd.DataFrame) -> pd.DataFrame:
     i = 1
 
     for label,doc in data.values:
-        logging.log(logging.INFO, f'{i}/{len(data.values)} || {(i*100)/len(data.values)}%')
+        logging.log(logging.INFO, f'перевод документа {i}/{len(data.values)} || {round((i*100)/len(data.values), 2)}%')
         try:
             translation = GoogleTranslator(source='en',target='ru').translate(doc)
             translated_dict['label'].append(label)
