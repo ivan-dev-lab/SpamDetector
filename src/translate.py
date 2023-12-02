@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 
 logging.basicConfig(level=logging.INFO,
-                    filename='logs/translate.log',
+                    filename='logs/preprocess.log',
                     filemode='w',
                     format="%(asctime)s %(levelname)s %(message)s",
                     encoding="utf8")
