@@ -16,12 +16,14 @@ def translate_data (data: pd.DataFrame) -> pd.DataFrame:
 
     for label,doc in data.values:
         logging.log(logging.INFO, f'перевод документа {i}/{len(data.values)} || {round((i*100)/len(data.values), 2)}%')
+        if len(doc) > 5000: doc = doc[0:4999]
         try:
             translation = GoogleTranslator(source='en',target='ru').translate(doc)
             translated_dict['label'].append(label)
             translated_dict['text'].append(translation)
-        except: 
+        except : 
             logging.log(logging.WARNING, f'Ошибка при переводе документа {i}')
+
         i+=1
 
     translated_data = pd.DataFrame(data=translated_dict)
