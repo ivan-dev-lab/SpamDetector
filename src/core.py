@@ -3,17 +3,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score
 import pickle
+from deep_translator import GoogleTranslator
+import langdetect
+import os
+import sys
 from translate import translate_data
 from preprocess import clean_text, lemmatize_data
 
-# функция для тренировки модели из sklearn
-
-def train_model (fdata: str, models: list, paths_to_save: list, limit: int=5000) -> int:
+# функция для тренировки моделей из sklearn
+def train_models (fdata: str, models: list, paths_to_save: list, limit: int=5000) -> int:
     if len(models) == len(paths_to_save):
         data = pd.read_csv(fdata).iloc[0:limit]
         data = translate_data(data)
-        data['text'] = clean_text(data)
-        data['text'] = lemmatize_data(data)
+        data['text'] = clean_text(data['text'])
+        data['text'] = lemmatize_data(data['text'])
 
         y = data['label'].values
         
@@ -45,25 +48,40 @@ def train_model (fdata: str, models: list, paths_to_save: list, limit: int=5000)
     else:
         raise ValueError(f'Несоотвествие длины списка моделей для обучения и списка путей сохранения [{len(models)}] != [{len(paths_to_save)}]')
 
-# заготовки для функции обработки одного сообщения
-# data = pd.read_csv('data/combined_data.csv').iloc[5006:5007]
-# data = translate_data(data)
-# data['text'] = clean_text(data)
-# data['text'] = lemmatize_data(data)
 
-# X = data['text']
-# Y = data['label'].values
-# print(f'текст = {X.values}', end='\n\n')
-# print(f'реальное значение = {Y}')
+def get_predictions (texts: list) -> list:
+    all_predictions = []
 
-# with open('models/TF-IDF_vectorizer.pkl', mode='rb') as vectorizer_file:
-#     vectorizer = pickle.load(vectorizer_file)
+    for text in texts:
+        if len(text) > 5000: text = text[0:4999]
+        
+        if langdetect.detect(text) != 'ru':
+            text = GoogleTranslator(source='en',target='ru').translate(text)
 
-# X_tfidf = vectorizer.transform(raw_documents=X)
+        text_df = pd.DataFrame(data={'text': text}, index=[0])
 
+        text_df['text'] = clean_text(text_df['text'])
+        text_df['text'] = lemmatize_data(text_df['text'])
 
-# with open('models\MultinomialNB.pkl', mode='rb') as model_file:
-#     model = pickle.load(model_file)
-#     y_pred = model.predict(X_tfidf)
+        with open('models/TF-IDF_vectorizer.pkl', mode='rb') as vectorizer_file:
+            vectorizer = pickle.load(vectorizer_file)
 
-#     print(f'предсказанное значение = {y_pred}')
+        text_df_TFIDF = vectorizer.transform(text_df)
+        current_predictions = []
+
+        for path_model in os.listdir('models/'):
+            with open(f'models/{path_model}', mode='rb') as model_file:
+                if 'TF-IDF' in path_model: break
+                model = pickle.load(model_file)
+
+            current_predictions.append(model.predict(text_df_TFIDF)[0])
+        
+        all_predictions.append(current_predictions)
+
+    print(all_predictions)
+
+emails = [
+    'Уральским федеральным университетом:Изумруд 2023/24, Информатика, 11 класс (не выполнено). Изумруд 2023/24, Математика, 11 класс (не выполнено). Изумруд 2023/24, Русский язык, 11 класс (не выполнено). Тест отборочного этапа необходимо выполнить до 14 января 2024 года 21:59 по московоскому времени (23:59 по времени города Екатеринбурга). Для доступа в систему тестирования используйте логин ivan_ul и пароль, указанный при регистрации. Если вы забыли пароль, то его можно сменить по ссылке: dovuz.urfu.ru/user/forgot. Обратиться в службу поддержки можно в чате вк.'
+]
+# модели хорошо понимают где спам, но плохо отличают письма не спама
+get_predictions(emails)
