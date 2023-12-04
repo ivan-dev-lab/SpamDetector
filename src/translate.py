@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO,
 
 # из-за того, что файл с данными для обучения на английском языке, а проект создан для распознавания спама в русских письмах, исходные данные необходимо перевести на русский язык
 
-def translate_data (data: pd.DataFrame) -> pd.DataFrame:
+def translate_data (data: pd.DataFrame, path_to_save: str) -> pd.DataFrame:
     translated_dict = {'label': [], 'text': []}
     i = 1
 
@@ -27,4 +27,5 @@ def translate_data (data: pd.DataFrame) -> pd.DataFrame:
         i+=1
 
     translated_data = pd.DataFrame(data=translated_dict)
+    translated_data.to_csv(path_to_save)
     return translated_data
