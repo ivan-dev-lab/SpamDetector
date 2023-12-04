@@ -17,11 +17,14 @@ def clean_text (data: pd.DataFrame) -> pd.DataFrame:
     i = 1
 
     for doc in data:
-        cleaned_doc = nltk.word_tokenize(re.sub(r'\s+', ' ', re.sub(r'\W',' ',doc)).lower())
-        cleaned_doc = [word for word in cleaned_doc if word not in sw]
-        cleaned_text.append(' '.join(cleaned_doc))
+        try:
+            cleaned_doc = nltk.word_tokenize(re.sub(r'\s+', ' ', re.sub(r'\W',' ',doc)).lower())
+            cleaned_doc = [word for word in cleaned_doc if word not in sw]
+            cleaned_text.append(' '.join(cleaned_doc))
 
-        logging.log(level=logging.INFO, msg=f'очищен текст {i}/{len(data)} || {round((i*100)/len(data), 2)}%')
+            logging.log(level=logging.INFO, msg=f'очищен текст {i}/{len(data)} || {round((i*100)/len(data), 2)}%')
+        except:
+            logging.log(logging.WARNING, f'Ошибка при переводе документа {i}')
         i+=1
     return cleaned_text
 
