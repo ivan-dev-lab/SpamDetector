@@ -1,3 +1,4 @@
 logs
 __pycache__
 data/combined_data.csv
+data/translated_data.csv
