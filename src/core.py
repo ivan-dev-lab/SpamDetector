@@ -31,13 +31,11 @@ def train_models (fdata: str, models: list, paths_to_save: list, limit=None, nee
 
         i = 0
         for model in models:
-            print(model, end=': ')
             model_training = model()
             model_training.fit(X_train_tfidf,y_train)
 
             y_pred_current_model = model_training.predict(X_test_tfidf)
             accuracy_current_model = accuracy_score(y_test,y_pred_current_model)
-            print(accuracy_current_model)
 
             with open(paths_to_save[i], mode='wb+') as model_file:
                 pickle.dump(model_training, model_file)
@@ -69,7 +67,6 @@ def get_predictions (texts: list, fpath_models: str) -> list:
 
     X_df['text'] = clean_text(X_df['text'])
     X_df['text'] = lemmatize_data(X_df['text'])
-    print(X_df['text'])
     X_vectorized = vectorizer.transform(raw_documents=X_df['text'])
     
     predictions = []
