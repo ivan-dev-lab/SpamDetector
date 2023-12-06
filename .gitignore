@@ -2,3 +2,10 @@ logs
 __pycache__
 data/combined_data.csv
 data/translated_data.csv
+models/DecisionTreeClassifier.pkl
+models/GradientBoostingClassifier.pkl
+models/NearestCentroid.pkl
+models/RandomForestClassifier.pkl
+models/SVC.pkl
+models/KNeighborsClassifier.pkl
+models/TF-IDF_vectorizer.pkl
