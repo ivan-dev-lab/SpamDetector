@@ -1,12 +1,14 @@
 # SpamDetector
 
 ## Описание:
-В ходе проекта обучены 4 модели машинного обучения библиотеки **scikit-learn**
-1. `DecisionTreeClassifier`: **88%**
-2. `MultinomialNB`: **94,76%**
-3. `RandomForestClassifier`: **94,96%**
+В ходе проекта обучены 5 модели машинного обучения библиотеки **scikit-learn**
+1. `DecisionTreeClassifier`: **92%**
+2. `GradientBoostingClassifier`: **96%**
+3. `NearestCentroid`: **93,96%**
+4. `RandomForestClassifier`: **94%**
+5. `SVC`: **97%**
 
-Также была обучена модель `TF-IDF_vectorizer` для объема в 5000 слов
+Также была обучена модель `TF-IDF_vectorizer` для объема в **83343** слов
 
 ## Автор проекта
 **Улановский Иван:**
